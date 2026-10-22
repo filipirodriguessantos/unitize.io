@@ -46,3 +46,12 @@ body>.header{position:sticky;z-index:30}body>.footer{position:relative;z-index:1
 .footer{flex-wrap:wrap}.footer .copyright{flex-basis:100%;font-size:11px;color:#8198b3;padding-top:12px;border-top:1px solid var(--line)}
 
 .coming-soon{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:265px}.coming-soon>i{font-size:24px;color:var(--blue);margin-bottom:18px}.coming-soon-label{display:inline-block;font-size:11px;color:#99f3ff;border:1px solid #29415e;border-radius:20px;padding:3px 10px;margin-bottom:18px}.coming-soon h3{font-size:25px}.coming-soon p{font-size:14px}.coming-soon .caption{font-size:12px;margin:0}
+
+/* Illustration conceptuelle de l’écosystème, sans animation supplémentaire. */
+.architecture-intro{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:48px;margin-bottom:48px}
+.architecture-intro .section-heading{margin-bottom:0;min-width:0}
+.ecosystem-figure{margin:0;min-width:0;text-align:center}
+.ecosystem-figure img{display:block;width:100%;height:auto;max-height:350px;object-fit:contain;margin-inline:auto}
+.ecosystem-figure figcaption{font-size:13px;color:var(--ink);line-height:1.6;margin-top:16px}
+.ecosystem-figure small{display:block;font-size:11px;color:var(--muted);margin-top:7px}
+@media(max-width:800px){.architecture-intro{grid-template-columns:1fr;gap:24px;margin-bottom:30px}.ecosystem-figure{max-width:480px;margin-inline:auto}.ecosystem-figure img{max-height:300px}}
