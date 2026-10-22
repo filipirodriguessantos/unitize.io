@@ -73,3 +73,23 @@ body>.header{position:sticky;z-index:30}body>.footer{position:relative;z-index:1
   .ecosystem-art .ecosystem-base{clip-path:none}
   .ecosystem-art .ecosystem-bubbles{display:none;animation:none}
 }
+
+/* Independent logo regions; the center moves vertically to keep the beam aligned. */
+.ecosystem-art .ecosystem-logo{display:none}
+@supports (clip-path:inset(0)){
+  .ecosystem-art .ecosystem-base{clip-path:inset(0 49.3% 0 49.3%)}
+  .ecosystem-art .ecosystem-logo{display:block;position:absolute;inset:0;animation:unitize-logo-drift var(--float-duration,8s) ease-in-out infinite;animation-delay:var(--float-delay,0s)}
+  .ecosystem-logo-1{clip-path:inset(31% 85.4% 47% 0);--float-duration:7.6s;--float-delay:-1.2s;--float-x:1px;--float-y:-4px}
+  .ecosystem-logo-2{clip-path:inset(28% 63.5% 44% 15.5%);--float-duration:9.2s;--float-delay:-4s;--float-x:-1px;--float-y:5px}
+  .ecosystem-logo-3{clip-path:polygon(37% 25%,49.3% 25%,49.3% 59%,50.7% 59%,50.7% 25%,63% 25%,63% 59%,37% 59%);--float-duration:10.4s;--float-delay:-2s;--float-x:0px;--float-y:-2px}
+  .ecosystem-logo-4{clip-path:inset(28% 15.2% 44% 64%);--float-duration:8.5s;--float-delay:-5.5s;--float-x:1px;--float-y:-5px}
+  .ecosystem-logo-5{clip-path:inset(31% 0 47% 85.7%);--float-duration:7.9s;--float-delay:-3.2s;--float-x:-1px;--float-y:4px}
+}
+@keyframes unitize-logo-drift{
+  0%,100%{transform:translate(0,0)}
+  50%{transform:translate(var(--float-x,0px),var(--float-y,-4px))}
+}
+@media(prefers-reduced-motion:reduce){
+  .ecosystem-art .ecosystem-base{clip-path:none}
+  .ecosystem-art .ecosystem-logo{display:none;animation:none}
+}
