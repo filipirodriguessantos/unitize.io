@@ -42,7 +42,7 @@
 
 body>.header{position:sticky;z-index:30}body>.footer{position:relative;z-index:1}#navbar .language-picker{position:relative}html[dir=rtl] .mission-window{direction:ltr}
 .lang-button{border-radius:8px}
-#nav_list a i,#mobile_menu a i{color:var(--blue)}
+#nav_list a i,#mobile_menu a i{color:#99f3ff}
 .footer{flex-wrap:wrap}.footer .copyright{flex-basis:100%;font-size:11px;color:#8198b3;padding-top:12px;border-top:1px solid var(--line)}
 
 .coming-soon{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:265px}.coming-soon>i{font-size:24px;color:var(--blue);margin-bottom:18px}.coming-soon-label{display:inline-block;font-size:11px;color:#99f3ff;border:1px solid #29415e;border-radius:20px;padding:3px 10px;margin-bottom:18px}.coming-soon h3{font-size:25px}.coming-soon p{font-size:14px}.coming-soon .caption{font-size:12px;margin:0}
