@@ -103,3 +103,7 @@ body>.header{position:sticky;z-index:30}body>.footer{position:relative;z-index:1
 #nav_list a i{font-size:15px;margin-inline-end:8px}
 #mobile_menu a{font-size:17px}
 #mobile_menu a i{font-size:17px}
+
+/* Match the platform navigation hover; keep resting icons pale cyan. */
+#nav_list a:hover,#nav_list a:focus-visible,#nav_list a.active,
+#mobile_menu a:hover,#mobile_menu a:focus-visible,#mobile_menu a.active{color:var(--blue)}
