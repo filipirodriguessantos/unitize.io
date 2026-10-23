@@ -92,3 +92,7 @@ body>.header{position:sticky;z-index:30}body>.footer{position:relative;z-index:1
   .ecosystem-art .ecosystem-base{clip-path:none}
   .ecosystem-art .ecosystem-logo{display:none;animation:none}
 }
+
+.technology-marks{display:flex;flex-wrap:wrap;gap:14px;margin:12px 0;font-size:13px;color:var(--ink)}
+.technology-marks span{display:inline-flex;align-items:center;gap:7px}
+.technology-marks i{color:var(--blue);font-size:17px}
