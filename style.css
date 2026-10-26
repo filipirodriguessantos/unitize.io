@@ -107,3 +107,25 @@ body>.header{position:sticky;z-index:30}body>.footer{position:relative;z-index:1
 /* Match the platform navigation hover; keep resting icons pale cyan. */
 #nav_list a:hover,#nav_list a:focus-visible,#nav_list a.active,
 #mobile_menu a:hover,#mobile_menu a:focus-visible,#mobile_menu a.active{color:var(--blue)}
+
+
+/* Contorno neon compartilhado com os quadros da plataforma. */
+:is(.mission-window, .architecture-flow, .waitlist-form, .card) {
+  transition: border-color .22s ease, box-shadow .22s ease;
+}
+@media (hover: hover) {
+  :is(.mission-window, .architecture-flow, .waitlist-form, .card):hover {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 1px rgba(53,216,255,.18),
+                0 0 16px rgba(53,216,255,.20),
+                0 0 32px rgba(53,216,255,.09),
+                0 12px 40px #0002;
+  }
+}
+:is(.mission-window, .architecture-flow, .waitlist-form, .card):focus-within {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 1px rgba(53,216,255,.18), 0 0 18px rgba(53,216,255,.16);
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.mission-window, .architecture-flow, .waitlist-form, .card) { transition: none; }
+}
