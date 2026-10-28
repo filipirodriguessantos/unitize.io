@@ -384,6 +384,13 @@
   ];
   const targets=[...new Set(document.querySelectorAll(selectors.join(',')))];
   const active=new Map();
+  const mobile=window.matchMedia('(max-width:700px)');
+  mobile.addEventListener?.('change',event=>{
+    if(!event.matches)return;
+    for(const [element,animation] of active){
+      if(element.matches('.mission-window'))animation.cancel();
+    }
+  });
   let previousScroll=window.scrollY,scrollingUp=false;
   window.addEventListener('scroll',()=>{
     const current=window.scrollY;
@@ -401,7 +408,7 @@
     entries.forEach(entry=>{
       if(!entry.isIntersecting)return;
       const element=entry.target;observer.unobserve(element);
-      if(scrollingUp||reduced.matches||document.hidden||element.contains(document.activeElement))return;
+      if((mobile.matches&&element.matches('.mission-window'))||scrollingUp||reduced.matches||document.hidden||element.contains(document.activeElement))return;
       // Preservar transformações existentes, como a perspectiva do quadro inicial.
       const original=getComputedStyle(element).transform;
       const baseline=original==='none'?'':original;
