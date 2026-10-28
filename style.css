@@ -129,3 +129,13 @@ body>.header{position:sticky;z-index:30}body>.footer{position:relative;z-index:1
 @media (prefers-reduced-motion: reduce) {
   :is(.mission-window, .architecture-flow, .waitlist-form, .card) { transition: none; }
 }
+
+/* Otimização temporária somente enquanto cada entrada está animando. */
+.unitize-reveal-running{will-change:transform,opacity}
+
+/* Evita rolagem horizontal durante entradas laterais; não altera o fluxo dos blocos. */
+body{overflow-x:clip}
+
+/* Ilustração fixa e completa, sem camadas flutuantes. */
+.ecosystem-art .ecosystem-base{clip-path:none}
+.ecosystem-art .ecosystem-bubbles,.ecosystem-art .ecosystem-logo{display:none;animation:none}
