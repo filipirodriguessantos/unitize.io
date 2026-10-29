@@ -392,7 +392,7 @@ window.UnitizeCaptureLocales=copy;
     '.section-heading','.architecture-flow > article',
     '.steps > li','.solution-list > article','.waitlist-copy'
   ];
-  const targets=[...new Set(document.querySelectorAll(selectors.join(',')))];
+  const targets=[...new Set(document.querySelectorAll(selectors.join(',')))].filter(element=>!element.closest('.waitlist-station'));
   const active=new Map();
   const mobile=window.matchMedia('(max-width:700px)');
   mobile.addEventListener?.('change',event=>{

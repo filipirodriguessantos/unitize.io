@@ -264,3 +264,6 @@ body{overflow-x:clip}
 .agent-particle-logo.particles-ready>img{visibility:hidden}
 @media(min-width:901px){.waitlist>.waitlist-copy{grid-column:1;grid-row:1;max-width:none}.waitlist>.agent-particle-logo{grid-column:2;grid-row:1}.waitlist>.waitlist-station{grid-row:2}}
 @media(max-width:900px){.waitlist>.waitlist-copy,.waitlist>.waitlist-station{grid-column:1/-1}.agent-particle-logo{height:280px;max-width:350px}}
+
+/* Registration card shells never participate in entrance or transform animations. */
+.waitlist-station,.waitlist-station>.waitlist-form,.waitlist-station>.ticket-terminal{animation:none!important;transform:none!important;translate:none!important;rotate:none!important;scale:none!important;will-change:auto!important}
