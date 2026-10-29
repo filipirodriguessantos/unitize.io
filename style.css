@@ -267,3 +267,13 @@ body{overflow-x:clip}
 
 /* Registration card shells never participate in entrance or transform animations. */
 .waitlist-station,.waitlist-station>.waitlist-form,.waitlist-station>.ticket-terminal{animation:none!important;transform:none!important;translate:none!important;rotate:none!important;scale:none!important;will-change:auto!important}
+
+/* CTA glow inspired by the reference, using only Unitize's own cyan palette. */
+.button{transition:background .2s ease,border-color .2s ease,box-shadow .25s ease}
+@media(hover:hover){
+ .button-primary:not(:disabled):not([aria-disabled="true"]):hover{box-shadow:0 0 20px 4px #35d8ff66}
+ .button-secondary:not(:disabled):not([aria-disabled="true"]):hover{box-shadow:0 0 20px 2px #35d8ff4d}
+}
+.button-primary:not(:disabled):focus-visible{box-shadow:0 0 20px 4px #35d8ff66;outline:2px solid #99f3ff;outline-offset:4px}
+.button-secondary:not(:disabled):focus-visible{box-shadow:0 0 20px 2px #35d8ff4d;outline:2px solid #99f3ff;outline-offset:4px}
+@media(prefers-reduced-motion:reduce){.button{transition:none}}
