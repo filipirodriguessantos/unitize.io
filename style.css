@@ -183,3 +183,10 @@ body{overflow-x:clip}
 .ticket-paper-logo{display:block;width:28px;height:28px;object-fit:contain;flex-shrink:0;filter:brightness(.25)}
 
 .capture-questions{margin:0 0 20px}.capture-questions summary{color:var(--blue);cursor:pointer;font-size:12px;margin-bottom:14px}.capture-questions label{display:block;font-size:12px;margin:12px 0 6px}.capture-questions select{box-sizing:border-box;width:100%;max-width:100%;background:#081222;color:var(--ink);border:1px solid #34516d;border-radius:7px;padding:10px}.capture-managed .caption{line-height:1.7}.capture-managed label>i{color:var(--blue)}.capture-managed [data-capture-challenge]{margin-bottom:14px;min-width:0}
+
+/* Capture fields remain usable within small mobile viewports. */
+.waitlist-form.capture-managed{min-width:0;max-width:100%;box-sizing:border-box}
+.capture-managed input[type=email],.capture-managed button,.capture-managed select{max-width:100%;box-sizing:border-box}
+.capture-managed [data-capture-challenge]{width:100%;overflow:hidden}
+.capture-managed .caption,.capture-managed .form-status{overflow-wrap:anywhere}
+@media(max-width:700px){.capture-managed input[type=email],.capture-managed select{font-size:16px}.capture-managed button{white-space:normal}.capture-managed .caption{font-size:12px}.capture-questions summary{font-size:13px}}
