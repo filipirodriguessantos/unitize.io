@@ -190,3 +190,6 @@ body{overflow-x:clip}
 .capture-managed [data-capture-challenge]{width:100%;overflow:hidden}
 .capture-managed .caption,.capture-managed .form-status{overflow-wrap:anywhere}
 @media(max-width:700px){.capture-managed input[type=email],.capture-managed select{font-size:16px}.capture-managed button{white-space:normal}.capture-managed .caption{font-size:12px}.capture-questions summary{font-size:13px}}
+
+/* Cyan focus contour for questionnaire dropdowns. */
+.capture-questions select:focus{border-color:#35D8FF;outline:2px solid #35D8FF;outline-offset:1px;box-shadow:0 0 0 3px #35d8ff18}
