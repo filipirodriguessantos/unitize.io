@@ -203,7 +203,7 @@ body{overflow-x:clip}
 /* Orange counterpart of the Run Control / ticket terminal glow. */
 .capture-managed [data-capture-challenge]:not(:empty){transition:border-color .22s ease,box-shadow .22s ease}
 @media(hover:hover){
- .capture-managed:hover [data-capture-challenge]:not(:empty),.capture-managed [data-capture-challenge]:not(:empty):hover{border-color:#f6821f;box-shadow:0 0 0 1px #f6821f2e,0 0 16px #f6821f33,0 0 32px #f6821f17,0 12px 40px #0002}
+ .capture-managed:hover [data-capture-challenge]:not(:empty),.capture-managed [data-capture-challenge]:not(:empty):hover{border-color:#f6821f;box-shadow:0 0 0 1px #f6821f66,0 0 16px #f6821f66,0 0 32px #f6821f33,0 12px 40px #0002}
 }
-.capture-managed:focus-within [data-capture-challenge]:not(:empty),.capture-managed [data-capture-challenge]:not(:empty):focus-within{border-color:#f6821f;box-shadow:0 0 0 1px #f6821f2e,0 0 18px #f6821f29}
+.capture-managed:focus-within [data-capture-challenge]:not(:empty),.capture-managed [data-capture-challenge]:not(:empty):focus-within{border-color:#f6821f;box-shadow:0 0 0 1px #f6821f66,0 0 16px #f6821f66,0 0 32px #f6821f33,0 12px 40px #0002}
 @media(prefers-reduced-motion:reduce){.capture-managed [data-capture-challenge]:not(:empty){transition:none}}
