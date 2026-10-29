@@ -390,7 +390,7 @@ window.UnitizeCaptureLocales=copy;
     '.hero-copy > .eyebrow','.hero-copy > h1','.hero-copy > .lead',
     '.hero-copy > .hero-actions','.hero-copy > .caption','.mission-window',
     '.section-heading','.architecture-flow > article',
-    '.steps > li','.solution-list > article','.waitlist-copy','.waitlist-form','.ticket-terminal'
+    '.steps > li','.solution-list > article','.waitlist-copy'
   ];
   const targets=[...new Set(document.querySelectorAll(selectors.join(',')))];
   const active=new Map();
@@ -439,19 +439,6 @@ window.UnitizeCaptureLocales=copy;
     });
   },{threshold:.08,rootMargin:'0px 0px -20px 0px'});
   targets.forEach(element=>observer.observe(element));
-  // Capture replaces its placeholder after API configuration loads.
-  // Observe the replacement form too, rather than only the detached placeholder.
-  const station=document.querySelector('.waitlist-station');
-  if(station){
-    const replacements=new MutationObserver(records=>{
-      for(const record of records)for(const node of record.addedNodes){
-        if(node.nodeType!==1||!node.matches('.waitlist-form'))continue;
-        delays.set(node,0);observer.observe(node);replacements.disconnect();return;
-      }
-    });
-    replacements.observe(station,{childList:true});
-    reduced.addEventListener?.('change',event=>{if(event.matches)replacements.disconnect();});
-  }
 
   reduced.addEventListener?.('change',event=>{
     if(!event.matches)return;
