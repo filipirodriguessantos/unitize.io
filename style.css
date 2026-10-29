@@ -207,3 +207,11 @@ body{overflow-x:clip}
 }
 .capture-managed:focus-within [data-capture-challenge]:not(:empty),.capture-managed [data-capture-challenge]:not(:empty):focus-within{border-color:#f6821f;box-shadow:0 0 0 1px #f6821f66,0 0 16px #f6821f66,0 0 32px #f6821f33,0 12px 40px #0002}
 @media(prefers-reduced-motion:reduce){.capture-managed [data-capture-challenge]:not(:empty){transition:none}}
+
+/* Existing privacy text, grouped behind a keyboard-accessible disclosure. */
+.capture-legal{margin:0 0 20px;min-width:0}
+.capture-legal summary{color:var(--blue);cursor:pointer;font-size:12px;line-height:1.7;width:fit-content}
+.capture-legal summary::marker{color:var(--blue)}
+.capture-legal summary:focus-visible{outline:2px solid var(--blue);outline-offset:4px;border-radius:3px}
+.capture-legal[open] summary{margin-bottom:12px}
+@media(max-width:700px){.capture-legal summary{font-size:13px}}
