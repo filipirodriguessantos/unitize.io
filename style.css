@@ -225,3 +225,13 @@ body{overflow-x:clip}
 @media(hover:hover){.waitlist-station:hover{border-color:var(--blue);box-shadow:0 0 0 1px #35d8ff2e,0 0 16px #35d8ff33,0 0 32px #35d8ff17,0 12px 40px #0002}}
 .waitlist-station:focus-within{border-color:var(--blue);box-shadow:0 0 0 1px #35d8ff2e,0 0 18px #35d8ff29}
 @media(prefers-reduced-motion:reduce){.waitlist-station{transition:none}}
+
+/* Horizontal registration station on desktop; stacked on smaller screens. */
+@media(min-width:901px){
+ .waitlist>.waitlist-copy{grid-column:1/-1;max-width:760px}
+ .waitlist>.waitlist-station{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+ .waitlist-station>.waitlist-form,.waitlist-station>.waitlist-form:hover,.waitlist-station>.waitlist-form:focus-within{border-radius:15px 0 0 15px}
+ .waitlist-station>.ticket-terminal,.waitlist-station>.ticket-terminal:hover,.waitlist-station>.ticket-terminal:focus-within{border-top:0;border-inline-start:1px solid #2b435c;border-radius:0 15px 15px 0;min-height:100%;box-sizing:border-box}
+ [dir=rtl] .waitlist-station>.waitlist-form{border-radius:0 15px 15px 0}
+ [dir=rtl] .waitlist-station>.ticket-terminal{border-radius:15px 0 0 15px}
+}
