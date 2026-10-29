@@ -422,10 +422,14 @@ window.UnitizeCaptureLocales=copy;
       // Preservar transformações existentes, como a perspectiva do quadro inicial.
       const original=getComputedStyle(element).transform;
       const baseline=original==='none'?'':original;
-      const distance=Math.max(80,element.getBoundingClientRect().right+24);
+      const bounds=element.getBoundingClientRect();
+      const rtl=getComputedStyle(document.documentElement).direction==='rtl';
+      // Start outside the reading edge: left in LTR, right in RTL.
+      const distance=Math.max(80,rtl?document.documentElement.clientWidth-bounds.left+24:bounds.right+24);
+      const offset=rtl?distance:-distance;
       try{
         const animation=element.animate([
-          {opacity:1,transform:`translateX(-${distance}px) ${baseline}`.trim()},
+          {opacity:1,transform:`translateX(${offset}px) ${baseline}`.trim()},
           {opacity:1,transform:original}
         ],{duration:2000,delay:delays.get(element)||0,easing:'cubic-bezier(.2,.7,.2,1)',fill:'backwards'});
         element.classList.add('unitize-reveal-running');active.set(element,animation);
