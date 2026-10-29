@@ -193,3 +193,9 @@ body{overflow-x:clip}
 
 /* Cyan focus contour for questionnaire dropdowns. */
 .capture-questions select:focus{border-color:#35D8FF;outline:2px solid #35D8FF;outline-offset:1px;box-shadow:0 0 0 3px #35d8ff18}
+
+/* Turnstile: light widget, rounded orange frame; no scaling or clipped controls. */
+.capture-managed [data-capture-challenge]{box-sizing:border-box;width:calc(100% - 8px);max-width:360px;margin:0 auto 14px;overflow:visible}
+.capture-managed [data-capture-challenge]:not(:empty){padding:3px;border:1px solid #f6821f;border-radius:12px;background:#fafafa;box-shadow:0 0 0 1px #f6821f18}
+.capture-managed [data-capture-challenge][data-widget-size="compact"]{width:158px}
+.capture-managed [data-capture-challenge] iframe{display:block;border-radius:8px}
