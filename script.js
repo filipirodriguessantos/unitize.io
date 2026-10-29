@@ -1396,3 +1396,78 @@ void main () {
   });
 })();
 /* END UNITIZE_PUBLIC_CAPTURE */
+
+/* BEGIN UNITIZE_PARTICLE_LOGO */
+(function initParticleLogo(){
+  const host=document.querySelector('.agent-particle-logo');if(!host)return;
+  const canvas=host.querySelector('canvas'),fallback=host.querySelector('img');
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  let points=[],visible=false,raf=0,last=0,time=0,width=1,height=1;
+  // One reusable glow sprite is much cheaper than thousands of shadowBlur calls.
+  const glow=document.createElement('canvas');glow.width=glow.height=32;
+  const g=glow.getContext('2d');if(!g)return;
+  const gradient=g.createRadialGradient(16,16,0,16,16,16);
+  gradient.addColorStop(0,'#d5fbff');gradient.addColorStop(.14,'#99f3ff');
+  gradient.addColorStop(.35,'#35d8ffb0');gradient.addColorStop(1,'#35d8ff00');
+  g.fillStyle=gradient;g.fillRect(0,0,32,32);
+  function resize(){
+    const rect=host.getBoundingClientRect();width=rect.width;height=rect.height;
+    const dpr=Math.min(devicePixelRatio||1,2);
+    canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);draw();
+  }
+  function draw(){
+    ctx.clearRect(0,0,width,height);if(!points.length)return;
+    const angle=reduced.matches?.25:time*Math.PI*2/26;
+    const c=Math.cos(angle),s=Math.sin(angle),tilt=.16;
+    const scale=Math.min(width,height)*.39;
+    const projected=points.map(p=>{
+      const drift=reduced.matches?0:Math.sin(time*.9+p.phase)*.008;
+      const x=(p.x+drift)*c+p.z*s,z=-p.x*s+p.z*c;
+      const y=p.y*Math.cos(tilt)-z*Math.sin(tilt);
+      const depth=p.y*Math.sin(tilt)+z*Math.cos(tilt);
+      const perspective=3.6/(3.6-depth);
+      return {x:width/2+x*scale*perspective,y:height/2+y*scale*perspective,z:depth,
+        size:p.size*perspective,alpha:(.52+.35*(depth+1)/2)*(reduced.matches?1:.8+.2*Math.sin(time*1.25+p.phase))};
+    }).sort((a,b)=>a.z-b.z);
+    ctx.globalCompositeOperation='lighter';
+    for(const p of projected){ctx.globalAlpha=p.alpha;const radius=p.size*3.1;ctx.drawImage(glow,p.x-radius,p.y-radius,radius*2,radius*2);}
+    ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+  }
+  function tick(stamp){
+    raf=0;if(!visible||document.hidden||reduced.matches)return;
+    if(stamp-last>=1000/30){time+=Math.min((stamp-last)/1000,.07);last=stamp;draw();}
+    raf=requestAnimationFrame(tick);
+  }
+  function sync(){
+    if(raf){cancelAnimationFrame(raf);raf=0;}
+    if(!visible||document.hidden)return;
+    last=performance.now();draw();if(!reduced.matches)raf=requestAnimationFrame(tick);
+  }
+  const image=new Image();
+  image.onload=()=>{
+    try{
+      const mask=document.createElement('canvas');mask.width=mask.height=240;
+      const m=mask.getContext('2d',{willReadFrequently:true});m.drawImage(image,0,0,240,240);
+      const data=m.getImageData(0,0,240,240).data;
+      for(let y=0;y<240;y+=3)for(let x=0;x<240;x+=3){
+        const i=(y*240+x)*4;
+        // Use only the cyan symbol; transparent/black background contributes no dots.
+        if(data[i+3]<80||data[i+1]<90||data[i+2]<90||data[i+1]<data[i]*1.15)continue;
+        const seed=Math.sin(x*127.1+y*311.7)*43758.5453,random=seed-Math.floor(seed);
+        points.push({x:(x-120)/120,y:(y-120)/120,z:(random-.5)*.24,phase:random*Math.PI*2,size:.65+random*.6});
+      }
+      if(!points.length)return;
+      host.dataset.particleCount=String(points.length);host.classList.add('particles-ready');resize();sync();
+    }catch{canvas.hidden=true;}
+  };
+  image.src=fallback.currentSrc||fallback.src;
+  if('ResizeObserver' in window)new ResizeObserver(resize).observe(host);else addEventListener('resize',resize);
+  if('IntersectionObserver' in window)new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync();},{rootMargin:'70px'}).observe(host);
+  else{visible=true;}
+  document.addEventListener('visibilitychange',sync);
+  if(reduced.addEventListener)reduced.addEventListener('change',sync);
+  else if(reduced.addListener)reduced.addListener(sync);
+})();
+/* END UNITIZE_PARTICLE_LOGO */
