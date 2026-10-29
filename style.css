@@ -215,3 +215,13 @@ body{overflow-x:clip}
 .capture-legal summary:focus-visible{outline:2px solid var(--blue);outline-offset:4px;border-radius:3px}
 .capture-legal[open] summary{margin-bottom:12px}
 @media(max-width:700px){.capture-legal summary{font-size:13px}}
+
+/* One registration station: form above, printer and paper directly below. */
+.waitlist-station{min-width:0;width:100%;align-self:start;box-sizing:border-box;border:1px solid #2b435c;border-radius:15px;background:linear-gradient(145deg,#132137,#0b1424);box-shadow:0 25px 90px #0004,0 0 70px #35d8ff08;transition:border-color .22s ease,box-shadow .22s ease}
+.waitlist-station>.waitlist-form,.waitlist-station>.waitlist-form:hover,.waitlist-station>.waitlist-form:focus-within{margin:0;width:100%;border:0;border-radius:15px 15px 0 0;background:none;box-shadow:none}
+.waitlist-station>.ticket-terminal,.waitlist-station>.ticket-terminal:hover,.waitlist-station>.ticket-terminal:focus-within{width:100%;margin:0;border:0;border-top:1px solid #2b435c;border-radius:0 0 15px 15px;background:none;box-shadow:none}
+.waitlist-station>.ticket-terminal .ticket-feed{min-height:110px}
+.waitlist-station>.ticket-terminal .ticket-empty{padding-block:22px}
+@media(hover:hover){.waitlist-station:hover{border-color:var(--blue);box-shadow:0 0 0 1px #35d8ff2e,0 0 16px #35d8ff33,0 0 32px #35d8ff17,0 12px 40px #0002}}
+.waitlist-station:focus-within{border-color:var(--blue);box-shadow:0 0 0 1px #35d8ff2e,0 0 18px #35d8ff29}
+@media(prefers-reduced-motion:reduce){.waitlist-station{transition:none}}
