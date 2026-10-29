@@ -235,3 +235,9 @@ body{overflow-x:clip}
  [dir=rtl] .waitlist-station>.waitlist-form{border-radius:0 15px 15px 0}
  [dir=rtl] .waitlist-station>.ticket-terminal{border-radius:15px 0 0 15px}
 }
+
+/* Override the printer's former full-row placement inside the shared grid. */
+@media(min-width:901px){
+ .waitlist-station>.waitlist-form{grid-column:1;grid-row:1;align-self:stretch}
+ .waitlist-station>.ticket-terminal{grid-column:2;grid-row:1;align-self:stretch;justify-self:stretch}
+}
