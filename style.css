@@ -241,3 +241,18 @@ body{overflow-x:clip}
  .waitlist-station>.waitlist-form{grid-column:1;grid-row:1;align-self:stretch}
  .waitlist-station>.ticket-terminal{grid-column:2;grid-row:1;align-self:stretch;justify-self:stretch}
 }
+
+/* Two independent equal-sized cards, retaining their shared responsive layout. */
+.waitlist-station,.waitlist-station:hover,.waitlist-station:focus-within{border:0;border-radius:0;background:none;box-shadow:none;display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:stretch}
+.waitlist-station>.waitlist-form,.waitlist-station>.ticket-terminal{box-sizing:border-box;width:100%;min-width:0;margin:0;padding:28px 30px;border:1px solid #2b435c;border-radius:15px;background:linear-gradient(145deg,#132137,#0b1424);box-shadow:0 25px 90px #0004,0 0 70px #35d8ff08;align-self:stretch;min-height:0;grid-column:auto;grid-row:auto}
+@media(hover:hover){
+ .waitlist-station>.waitlist-form:hover,.waitlist-station>.ticket-terminal:hover{border:1px solid var(--blue);border-radius:15px;background:linear-gradient(145deg,#132137,#0b1424);box-shadow:0 0 0 1px #35d8ff2e,0 0 16px #35d8ff33,0 0 32px #35d8ff17,0 12px 40px #0002}
+}
+.waitlist-station>.waitlist-form:focus-within,.waitlist-station>.ticket-terminal:focus-within{border:1px solid var(--blue);border-radius:15px;background:linear-gradient(145deg,#132137,#0b1424);box-shadow:0 0 0 1px #35d8ff2e,0 0 18px #35d8ff29}
+@media(min-width:901px){
+ .waitlist>.waitlist-station{grid-template-columns:repeat(2,minmax(0,510px));justify-content:center;gap:28px}
+ .waitlist-station>.waitlist-form{grid-column:1;grid-row:1}
+ .waitlist-station>.ticket-terminal{grid-column:2;grid-row:1}
+ [dir=rtl] .waitlist-station>.waitlist-form,[dir=rtl] .waitlist-station>.ticket-terminal{border-radius:15px}
+}
+@media(max-width:700px){.waitlist-station>.waitlist-form,.waitlist-station>.ticket-terminal{padding:23px 16px}}
