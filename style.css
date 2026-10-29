@@ -196,14 +196,14 @@ body{overflow-x:clip}
 
 /* Turnstile: light widget, rounded orange frame; no scaling or clipped controls. */
 .capture-managed [data-capture-challenge]{box-sizing:border-box;width:calc(100% - 8px);max-width:360px;margin:0 auto 14px;overflow:visible}
-.capture-managed [data-capture-challenge]:not(:empty){padding:3px;border:1px solid #f6821f;border-radius:12px;background:#fafafa;box-shadow:0 0 0 1px #f6821f18}
+.capture-managed [data-capture-challenge]:not(:empty){padding:3px;border:1px solid #f6821f;border-radius:12px;background:#fafafa;box-shadow:0 0 0 1px #f6821f40,0 0 14px #f6821f33,0 0 28px #f6821f17}
 .capture-managed [data-capture-challenge][data-widget-size="compact"]{width:158px}
 .capture-managed [data-capture-challenge] iframe{display:block;border-radius:8px}
 
 /* Orange counterpart of the Run Control / ticket terminal glow. */
 .capture-managed [data-capture-challenge]:not(:empty){transition:border-color .22s ease,box-shadow .22s ease}
 @media(hover:hover){
- .capture-managed [data-capture-challenge]:not(:empty):hover{border-color:#f6821f;box-shadow:0 0 0 1px #f6821f2e,0 0 16px #f6821f33,0 0 32px #f6821f17,0 12px 40px #0002}
+ .capture-managed:hover [data-capture-challenge]:not(:empty),.capture-managed [data-capture-challenge]:not(:empty):hover{border-color:#f6821f;box-shadow:0 0 0 1px #f6821f2e,0 0 16px #f6821f33,0 0 32px #f6821f17,0 12px 40px #0002}
 }
-.capture-managed [data-capture-challenge]:not(:empty):focus-within{border-color:#f6821f;box-shadow:0 0 0 1px #f6821f2e,0 0 18px #f6821f29}
+.capture-managed:focus-within [data-capture-challenge]:not(:empty),.capture-managed [data-capture-challenge]:not(:empty):focus-within{border-color:#f6821f;box-shadow:0 0 0 1px #f6821f2e,0 0 18px #f6821f29}
 @media(prefers-reduced-motion:reduce){.capture-managed [data-capture-challenge]:not(:empty){transition:none}}
