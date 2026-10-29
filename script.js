@@ -390,7 +390,7 @@ window.UnitizeCaptureLocales=copy;
     '.hero-copy > .eyebrow','.hero-copy > h1','.hero-copy > .lead',
     '.hero-copy > .hero-actions','.hero-copy > .caption','.mission-window',
     '.section-heading','.architecture-flow > article',
-    '.steps > li','.solution-list > article','.waitlist-copy','.waitlist-form'
+    '.steps > li','.solution-list > article','.waitlist-copy','.waitlist-form','.ticket-terminal'
   ];
   const targets=[...new Set(document.querySelectorAll(selectors.join(',')))];
   const active=new Map();
