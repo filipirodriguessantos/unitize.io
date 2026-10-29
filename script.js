@@ -1419,9 +1419,9 @@ void main () {
   }
   function draw(){
     ctx.clearRect(0,0,width,height);if(!points.length)return;
-    const angle=reduced.matches?.25:time*Math.PI*2/26;
+    const angle=reduced.matches ? .25 :time*Math.PI*2/26;
     const c=Math.cos(angle),s=Math.sin(angle),tilt=.16;
-    const scale=Math.min(width,height)*.39;
+    const scale=Math.min(width,height)*.468;
     const projected=points.map(p=>{
       const drift=reduced.matches?0:Math.sin(time*.9+p.phase)*.008;
       const x=(p.x+drift)*c+p.z*s,z=-p.x*s+p.z*c;
@@ -1448,15 +1448,15 @@ void main () {
   const image=new Image();
   image.onload=()=>{
     try{
-      const mask=document.createElement('canvas');mask.width=mask.height=240;
-      const m=mask.getContext('2d',{willReadFrequently:true});m.drawImage(image,0,0,240,240);
-      const data=m.getImageData(0,0,240,240).data;
-      for(let y=0;y<240;y+=3)for(let x=0;x<240;x+=3){
-        const i=(y*240+x)*4;
+      const mask=document.createElement('canvas');mask.width=mask.height=320;
+      const m=mask.getContext('2d',{willReadFrequently:true});m.drawImage(image,0,0,320,320);
+      const data=m.getImageData(0,0,320,320).data;
+      for(let y=0;y<320;y+=2)for(let x=0;x<320;x+=2){
+        const i=(y*320+x)*4;
         // Use only the cyan symbol; transparent/black background contributes no dots.
         if(data[i+3]<80||data[i+1]<90||data[i+2]<90||data[i+1]<data[i]*1.15)continue;
         const seed=Math.sin(x*127.1+y*311.7)*43758.5453,random=seed-Math.floor(seed);
-        points.push({x:(x-120)/120,y:(y-120)/120,z:(random-.5)*.24,phase:random*Math.PI*2,size:.65+random*.6});
+        points.push({x:(x-160)/160,y:(y-160)/160,z:(random-.5)*.24,phase:random*Math.PI*2,size:.40+random*.34});
       }
       if(!points.length)return;
       host.dataset.particleCount=String(points.length);host.classList.add('particles-ready');resize();sync();
