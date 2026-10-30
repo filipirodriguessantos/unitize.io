@@ -277,3 +277,8 @@ body{overflow-x:clip}
 .button-primary:not(:disabled):focus-visible{box-shadow:0 0 20px 4px #35d8ff66;outline:2px solid #99f3ff;outline-offset:4px}
 .button-secondary:not(:disabled):focus-visible{box-shadow:0 0 20px 2px #35d8ff4d;outline:2px solid #99f3ff;outline-offset:4px}
 @media(prefers-reduced-motion:reduce){.button{transition:none}}
+
+/* First-frame guards: preserve layout while the animation renderer prepares. */
+@media(prefers-reduced-motion:no-preference){.unitize-reveal-pending{visibility:hidden}}
+@media(max-width:700px){.mission-window.unitize-reveal-pending{visibility:visible}}
+.ticket-terminal:is([data-cloth="queued"],[data-cloth="printing"]) .ticket-paper{visibility:hidden}

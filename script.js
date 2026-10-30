@@ -385,7 +385,8 @@ window.UnitizeCaptureLocales=copy;
 /* Apresentação progressiva: conteúdo visível mesmo sem animações. */
 (function initUnitizeReveal(){
   const reduced=window.matchMedia('(prefers-reduced-motion:reduce)');
-  if(reduced.matches||!('IntersectionObserver' in window)||typeof Element.prototype.animate!=='function')return;
+  const releaseBoot=()=>{document.documentElement.classList.remove('unitize-reveal-boot');clearTimeout(window.unitizeRevealWatchdog);};
+  if(reduced.matches||!('IntersectionObserver' in window)||typeof Element.prototype.animate!=='function'||window.unitizeRevealExpired){releaseBoot();return;}
   const selectors=[
     '.hero-copy > .eyebrow','.hero-copy > h1','.hero-copy > .lead',
     '.hero-copy > .hero-actions','.hero-copy > .caption','.mission-window',
@@ -418,7 +419,7 @@ window.UnitizeCaptureLocales=copy;
     entries.forEach(entry=>{
       if(!entry.isIntersecting)return;
       const element=entry.target;observer.unobserve(element);
-      if((mobile.matches&&element.matches('.mission-window'))||scrollingUp||reduced.matches||document.hidden||element.contains(document.activeElement))return;
+      if((mobile.matches&&element.matches('.mission-window'))||scrollingUp||reduced.matches||document.hidden||element.contains(document.activeElement)){element.classList.remove('unitize-reveal-pending');return;}
       // Preservar transformações existentes, como a perspectiva do quadro inicial.
       const original=getComputedStyle(element).transform;
       const baseline=original==='none'?'':original;
@@ -432,17 +433,19 @@ window.UnitizeCaptureLocales=copy;
           {opacity:1,transform:`translateX(${offset}px) ${baseline}`.trim()},
           {opacity:1,transform:original}
         ],{duration:2000,delay:delays.get(element)||0,easing:'cubic-bezier(.2,.7,.2,1)',fill:'backwards'});
+        element.classList.remove('unitize-reveal-pending');
         element.classList.add('unitize-reveal-running');active.set(element,animation);
         const clear=()=>{element.classList.remove('unitize-reveal-running');active.delete(element);};
         animation.onfinish=clear;animation.oncancel=clear;
-      }catch{element.classList.remove('unitize-reveal-running');}
+      }catch{element.classList.remove('unitize-reveal-running','unitize-reveal-pending');}
     });
   },{threshold:.08,rootMargin:'0px 0px -20px 0px'});
-  targets.forEach(element=>observer.observe(element));
+  targets.forEach(element=>{element.classList.add('unitize-reveal-pending');observer.observe(element);});
+  releaseBoot();
 
   reduced.addEventListener?.('change',event=>{
     if(!event.matches)return;
-    observer.disconnect();[...active.values()].forEach(animation=>animation.cancel());
+    observer.disconnect();targets.forEach(element=>element.classList.remove('unitize-reveal-pending'));[...active.values()].forEach(animation=>animation.cancel());
   });
   document.addEventListener('focusin',event=>{
     for(const [element,animation] of active){if(element.contains(event.target))animation.cancel();}
@@ -1297,7 +1300,7 @@ void main () {
     const emailLabel=terminal.querySelector('.ticket-email-row dt');if(emailLabel)emailLabel.textContent=window.UnitizeCaptureMessage('email');
     preview.textContent=state==='example'?text('Fechar exemplo','Close preview'):text('Ver exemplo do cartão','Preview sample card');
   }
-  function show(next,address){state=next;email=address;date=next==='received'?new Date():null;terminal.dataset.ticketState=state;output.hidden=false;empty.hidden=true;translate();renderPaper();}
+  function show(next,address){state=next;email=address;date=next==='received'?new Date():null;terminal.dataset.ticketState=state;terminal.dataset.cloth='queued';output.hidden=false;empty.hidden=true;translate();renderPaper();}
   preview.addEventListener('click',()=>{
     if(state==='received')return;
     if(state==='example'){stopPaper();state='waiting';output.hidden=true;empty.hidden=false;translate();}
