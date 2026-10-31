@@ -1410,6 +1410,67 @@ void main () {
   gradient.addColorStop(0,'#d5fbff');gradient.addColorStop(.14,'#99f3ff');
   gradient.addColorStop(.35,'#35d8ffb0');gradient.addColorStop(1,'#35d8ff00');
   g.fillStyle=gradient;g.fillRect(0,0,32,32);
+
+  let pointRenderer=null;
+  function createPointRenderer(){
+    const surface=document.createElement('canvas');
+    const gl=surface.getContext('webgl2',{alpha:true,antialias:false,premultipliedAlpha:true});
+    if(!gl)return null;
+    let program,buffer,texture,vert,frag;
+    function dispose(){if(program)gl.deleteProgram(program);if(buffer)gl.deleteBuffer(buffer);if(texture)gl.deleteTexture(texture);if(vert)gl.deleteShader(vert);if(frag)gl.deleteShader(frag);surface.remove();}
+    try{
+      function shader(type,code){const sh=gl.createShader(type);gl.shaderSource(sh,code);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS)){gl.deleteShader(sh);throw Error('particle_shader');}return sh;}
+      vert=shader(gl.VERTEX_SHADER,`#version 300 es
+        precision highp float;
+        in vec3 aPosition;in vec2 aDetail;
+        uniform vec2 uSize;uniform float uTime,uReduced,uDpr;
+        out float vAlpha;
+        void main(){
+          float angle=uReduced>0.5?0.25:uTime*6.28318530718/26.0;
+          float c=cos(angle),s=sin(angle),drift=uReduced>0.5?0.0:sin(uTime*0.9+aDetail.x)*0.008;
+          float x=(aPosition.x+drift)*c+aPosition.z*s;
+          float z=-aPosition.x*s+aPosition.z*c;
+          float y=aPosition.y*cos(0.16)-z*sin(0.16);
+          float depth=aPosition.y*sin(0.16)+z*cos(0.16);
+          float perspective=3.6/(3.6-depth);
+          vec2 pos=uSize*0.5+vec2(x,y)*min(uSize.x,uSize.y)*0.468*perspective;
+          gl_Position=vec4(pos.x/uSize.x*2.0-1.0,1.0-pos.y/uSize.y*2.0,0.0,1.0);
+          gl_PointSize=aDetail.y*perspective*6.2*uDpr;
+          vAlpha=(0.52+0.35*(depth+1.0)/2.0)*(uReduced>0.5?1.0:0.8+0.2*sin(uTime*1.25+aDetail.x));
+        }`);
+      frag=shader(gl.FRAGMENT_SHADER,`#version 300 es
+        precision mediump float;uniform sampler2D uGlow;in float vAlpha;out vec4 color;
+        void main(){vec4 glow=texture(uGlow,gl_PointCoord);color=vec4(glow.rgb,glow.a*vAlpha);}`);
+      program=gl.createProgram();gl.attachShader(program,vert);gl.attachShader(program,frag);gl.linkProgram(program);
+      if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error('particle_link');
+      gl.useProgram(program);
+      const data=new Float32Array(points.length*5);points.forEach((p,i)=>data.set([p.x,p.y,p.z,p.phase,p.size],i*5));
+      buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
+      const position=gl.getAttribLocation(program,'aPosition'),detail=gl.getAttribLocation(program,'aDetail');
+      gl.enableVertexAttribArray(position);gl.vertexAttribPointer(position,3,gl.FLOAT,false,20,0);
+      gl.enableVertexAttribArray(detail);gl.vertexAttribPointer(detail,2,gl.FLOAT,false,20,12);
+      texture=gl.createTexture();gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,glow);
+      gl.uniform1i(gl.getUniformLocation(program,'uGlow'),0);
+      gl.enable(gl.BLEND);gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE,gl.ONE,gl.ONE);gl.clearColor(0,0,0,0);
+      const uniforms=Object.fromEntries(['uSize','uTime','uReduced','uDpr'].map(name=>[name,gl.getUniformLocation(program,name)]));
+      surface.setAttribute('aria-hidden','true');surface.style.pointerEvents='none';
+      surface.addEventListener('webglcontextlost',event=>{event.preventDefault();pointRenderer=null;surface.remove();canvas.hidden=false;host.dataset.particleRenderer='canvas2d';sync();},{once:true});
+      host.append(surface);canvas.hidden=true;host.dataset.particleRenderer='webgl2';
+      return {
+        draw(t,reduce,w,h){
+          const dpr=Math.min(devicePixelRatio||1,2),cw=Math.round(w*dpr),ch=Math.round(h*dpr);
+          if(surface.width!==cw||surface.height!==ch){surface.width=cw;surface.height=ch;gl.viewport(0,0,cw,ch);}
+          gl.clear(gl.COLOR_BUFFER_BIT);gl.useProgram(program);gl.uniform2f(uniforms.uSize,w,h);
+          gl.uniform1f(uniforms.uTime,t);gl.uniform1f(uniforms.uReduced,reduce?1:0);gl.uniform1f(uniforms.uDpr,dpr);
+          gl.drawArrays(gl.POINTS,0,points.length);
+        },dispose
+      };
+    }catch{dispose();return null;}
+  }
+
   function resize(){
     const rect=host.getBoundingClientRect();width=rect.width;height=rect.height;
     const dpr=Math.min(devicePixelRatio||1,2);
@@ -1417,6 +1478,7 @@ void main () {
     ctx.setTransform(dpr,0,0,dpr,0,0);draw();
   }
   function draw(){
+    if(pointRenderer){pointRenderer.draw(time,reduced.matches,width,height);return;}
     ctx.clearRect(0,0,width,height);if(!points.length)return;
     const angle=reduced.matches ? .25 :time*Math.PI*2/26;
     const c=Math.cos(angle),s=Math.sin(angle),tilt=.16;
@@ -1461,6 +1523,7 @@ void main () {
         points.push({x:(x-160)/160,y:(y-160)/160,z:(random-.5)*.24,phase:random*Math.PI*2,size:.40+random*.34});
       }
       if(!points.length)return;
+      pointRenderer=createPointRenderer();if(!pointRenderer)host.dataset.particleRenderer='canvas2d';
       host.dataset.particleCount=String(points.length);host.classList.add('particles-ready');resize();sync();
     }catch{canvas.hidden=true;}
   };
