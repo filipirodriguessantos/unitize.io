@@ -643,10 +643,10 @@ SOFTWARE.
         shadow: 0.28,       // sombra de contato (0–1)
         perspective: 1200,  // distância focal (px)
     };
-    const SEG = 96;
+    const SEG = 64; // Fewer cloth vertices; same normalized wave speed.
     const NODES = SEG + 1;
     const DT = 1 / 120;
-    const WAVE_SPEED = 30;
+    const WAVE_SPEED = 20;
     const STIFFNESS = 0.55;
     const FORCE_GAIN = 5.0;
     const BLEED = 48;       // folga do canvas para as dobras e a sombra
@@ -937,7 +937,7 @@ void main () {
                 const l = row + Math.max(x - 1, 0), r = row + Math.min(x + 1, SEG);
                 const dzdx = (zField[r] - zField[l]) / (2 * cellW);
                 const dzdy = (zField[down + x] - zField[up + x]) / (2 * cellH);
-                const inv = 1 / Math.hypot(dzdx, dzdy, 1);
+                const inv = 1 / Math.sqrt(dzdx*dzdx + dzdy*dzdy + 1);
                 const curve = zField[l] + zField[r] + zField[up + x] + zField[down + x] - 4 * zField[i];
                 let fold = 1 - curve * 0.01;
                 if (fold < 0.86) fold = 0.86; else if (fold > 1.06) fold = 1.06;
