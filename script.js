@@ -146,7 +146,6 @@ window.UnitizeCaptureLocales=copy;
     function animate(time) {
       frame=null;
       if (document.hidden || reducedMotion.matches) return;
-      if(lastTime!==null&&time-lastTime<1000/30){frame=requestAnimationFrame(animate);return;}
       const delta=lastTime===null?0:Math.min((time-lastTime)/(1000/60),3);
       lastTime=time;
       draw(delta);
