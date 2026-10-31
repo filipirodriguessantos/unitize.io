@@ -32,40 +32,32 @@ window.UnitizeCaptureLocales=copy;
 
 
   (() => {
-    const cursor1 = document.querySelector('.cursor1');
-    const cursor2 = document.querySelector('.cursor2');
-    const cursorMode = window.matchMedia('(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference)');
-    const hideCursor = () => document.documentElement.classList.remove('unitize-cursor-active');
-
-    window.addEventListener('pointermove', event => {
-      if (!cursorMode.matches || event.pointerType !== 'mouse') {
-        hideCursor();
-        return;
+    const cursor1=document.querySelector('.cursor1'),cursor2=document.querySelector('.cursor2');
+    if(!cursor1||!cursor2)return;
+    const cursorMode=window.matchMedia('(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference)');
+    let frame=0,restoreFrame=0,x=0,y=0;
+    function hideCursor(){
+      if(frame)cancelAnimationFrame(frame);if(restoreFrame)cancelAnimationFrame(restoreFrame);
+      frame=restoreFrame=0;document.documentElement.classList.remove('unitize-cursor-active');
+    }
+    function paint(){
+      frame=0;
+      const first=!document.documentElement.classList.contains('unitize-cursor-active');
+      if(first){cursor1.style.transition='none';cursor2.style.transition='none';}
+      const position=`translate3d(${x}px,${y}px,0) translate(-50%,-50%)`;
+      cursor1.style.transform=position;cursor2.style.transform=position;
+      if(first){
+        document.documentElement.classList.add('unitize-cursor-active');
+        restoreFrame=requestAnimationFrame(()=>{restoreFrame=0;cursor1.style.transition='';cursor2.style.transition='';});
       }
-      const {clientX, clientY} = event;
-      const position = `translate(-50%, -50%) translate(${clientX}px, ${clientY}px)`;
-      // A primeira aparição não deve animar desde o canto da janela.
-      if (!document.documentElement.classList.contains('unitize-cursor-active')) {
-        cursor1.style.transition = 'none';
-        cursor2.style.transition = 'none';
-        cursor1.style.transform = position;
-        cursor2.style.transform = position;
-        void cursor2.offsetWidth;
-        cursor1.style.transition = '';
-        cursor2.style.transition = '';
-      } else {
-        cursor1.style.transform = position;
-        cursor2.style.transform = position;
-      }
-      document.documentElement.classList.add('unitize-cursor-active');
-    }, {passive:true});
-
-    document.documentElement.addEventListener('pointerleave', hideCursor);
-    window.addEventListener('blur', hideCursor);
-    cursorMode.addEventListener('change', hideCursor);
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) hideCursor();
-    });
+    }
+    window.addEventListener('pointermove',event=>{
+      if(!cursorMode.matches||event.pointerType!=='mouse'){hideCursor();return;}
+      x=event.clientX;y=event.clientY;if(!frame)frame=requestAnimationFrame(paint);
+    },{passive:true});
+    document.documentElement.addEventListener('pointerleave',hideCursor);
+    window.addEventListener('blur',hideCursor);cursorMode.addEventListener('change',hideCursor);
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)hideCursor();});
   })();
 
 
@@ -121,16 +113,17 @@ window.UnitizeCaptureLocales=copy;
       for (let i=0;i<stars.length && connectionCount<MAX_CONNECTIONS;i++) {
         if (connected.has(i)) continue;
         let nearest=-1;
-        let distance=CONNECTION_DISTANCE;
+        let distance=CONNECTION_DISTANCE*CONNECTION_DISTANCE;
         for (let j=i+1;j<stars.length;j++) {
           if (connected.has(j)) continue;
-          const candidateDistance=Math.hypot(stars[i].x-stars[j].x,stars[i].y-stars[j].y);
+          const dx=stars[i].x-stars[j].x,dy=stars[i].y-stars[j].y;
+          const candidateDistance=dx*dx+dy*dy;
           if (candidateDistance<distance) {nearest=j;distance=candidateDistance;}
         }
         if (nearest<0) continue;
         const start=stars[i];
         const end=stars[nearest];
-        const opacity=.18*(1-distance/CONNECTION_DISTANCE)*Math.min(start.opacity,end.opacity);
+        const opacity=.18*(1-Math.sqrt(distance)/CONNECTION_DISTANCE)*Math.min(start.opacity,end.opacity);
         ctx.beginPath();
         ctx.moveTo(start.x,start.y);
         ctx.lineTo(end.x,end.y);
@@ -153,6 +146,7 @@ window.UnitizeCaptureLocales=copy;
     function animate(time) {
       frame=null;
       if (document.hidden || reducedMotion.matches) return;
+      if(lastTime!==null&&time-lastTime<1000/30){frame=requestAnimationFrame(animate);return;}
       const delta=lastTime===null?0:Math.min((time-lastTime)/(1000/60),3);
       lastTime=time;
       draw(delta);
@@ -323,8 +317,9 @@ window.UnitizeCaptureLocales=copy;
   const observer=new MutationObserver(()=>{if(!scheduled){scheduled=true;requestAnimationFrame(()=>{scheduled=false;apply();});}});
   function apply(){
     observer.disconnect();
-    document.documentElement.lang=current==='zh'?'zh-CN':current;
-    document.documentElement.dir=languages[current].rtl?'rtl':'ltr';
+    const nextLang=current==='zh'?'zh-CN':current,nextDir=languages[current].rtl?'rtl':'ltr';
+    if(document.documentElement.lang!==nextLang)document.documentElement.lang=nextLang;
+    if(document.documentElement.dir!==nextDir)document.documentElement.dir=nextDir;
     const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
     let node;
     while((node=walker.nextNode())){
@@ -1426,17 +1421,20 @@ void main () {
     const angle=reduced.matches ? .25 :time*Math.PI*2/26;
     const c=Math.cos(angle),s=Math.sin(angle),tilt=.16;
     const scale=Math.min(width,height)*.468;
-    const projected=points.map(p=>{
+    // Additive glow is order-independent: no depth sort or per-frame object list.
+    ctx.globalCompositeOperation='lighter';
+    const ct=Math.cos(tilt),st=Math.sin(tilt);
+    for(const p of points){
       const drift=reduced.matches?0:Math.sin(time*.9+p.phase)*.008;
       const x=(p.x+drift)*c+p.z*s,z=-p.x*s+p.z*c;
-      const y=p.y*Math.cos(tilt)-z*Math.sin(tilt);
-      const depth=p.y*Math.sin(tilt)+z*Math.cos(tilt);
+      const y=p.y*ct-z*st;
+      const depth=p.y*st+z*ct;
       const perspective=3.6/(3.6-depth);
-      return {x:width/2+x*scale*perspective,y:height/2+y*scale*perspective,z:depth,
-        size:p.size*perspective,alpha:(.52+.35*(depth+1)/2)*(reduced.matches?1:.8+.2*Math.sin(time*1.25+p.phase))};
-    }).sort((a,b)=>a.z-b.z);
-    ctx.globalCompositeOperation='lighter';
-    for(const p of projected){ctx.globalAlpha=p.alpha;const radius=p.size*3.1;ctx.drawImage(glow,p.x-radius,p.y-radius,radius*2,radius*2);}
+      const px=width/2+x*scale*perspective,py=height/2+y*scale*perspective;
+      const radius=p.size*perspective*3.1;
+      ctx.globalAlpha=(.52+.35*(depth+1)/2)*(reduced.matches?1:.8+.2*Math.sin(time*1.25+p.phase));
+      ctx.drawImage(glow,px-radius,py-radius,radius*2,radius*2);
+    }
     ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
   }
   function tick(stamp){

@@ -282,3 +282,12 @@ body{overflow-x:clip}
 @media(prefers-reduced-motion:no-preference){.unitize-reveal-pending{visibility:hidden}}
 @media(max-width:700px){.mission-window.unitize-reveal-pending{visibility:visible}}
 .ticket-terminal:is([data-cloth="queued"],[data-cloth="printing"]) .ticket-paper{visibility:hidden}
+
+/* PERF_WAITLIST: rasterize the cyan glow once; animate only its opacity. */
+.cursor1,.cursor2{will-change:transform}
+.waitlist-station>.waitlist-form,.waitlist-station>.ticket-terminal,
+.waitlist-station>.waitlist-form:is(:hover,:focus-within),.waitlist-station>.ticket-terminal:is(:hover,:focus-within){position:relative;isolation:isolate;transition:border-color .22s ease;box-shadow:0 25px 90px #0004,0 0 70px #35d8ff08}
+.waitlist-station>.waitlist-form::before,.waitlist-station>.ticket-terminal::before{content:'';position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;box-shadow:0 0 0 1px #35d8ff2e,0 0 16px #35d8ff33,0 0 32px #35d8ff17;opacity:0;transition:opacity .22s ease;will-change:opacity}
+@media(hover:hover){.waitlist-station>.waitlist-form:hover::before,.waitlist-station>.ticket-terminal:hover::before{opacity:1}}
+.waitlist-station>.waitlist-form:focus-within::before,.waitlist-station>.ticket-terminal:focus-within::before{opacity:1}
+@media(prefers-reduced-motion:reduce){.waitlist-station>.waitlist-form::before,.waitlist-station>.ticket-terminal::before{transition:none}}
