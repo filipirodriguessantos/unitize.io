@@ -65,7 +65,7 @@ window.UnitizeCaptureLocales=copy;
     const canvas = document.getElementById('starfield-canvas');
     const ctx = canvas?.getContext('2d');
     if (!ctx) return;
-    const STAR_COUNT = 220;
+    const STAR_COUNT = 170;
     const SPEED_X = -.15;
     const SPEED_Y = .35;
     const WHITE_STAR = 'rgba(238,244,255,';
