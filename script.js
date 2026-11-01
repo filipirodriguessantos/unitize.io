@@ -32,40 +32,32 @@ window.UnitizeCaptureLocales=copy;
 
 
   (() => {
-    const cursor1 = document.querySelector('.cursor1');
-    const cursor2 = document.querySelector('.cursor2');
-    const cursorMode = window.matchMedia('(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference)');
-    const hideCursor = () => document.documentElement.classList.remove('unitize-cursor-active');
-
-    window.addEventListener('pointermove', event => {
-      if (!cursorMode.matches || event.pointerType !== 'mouse') {
-        hideCursor();
-        return;
+    const cursor1=document.querySelector('.cursor1'),cursor2=document.querySelector('.cursor2');
+    if(!cursor1||!cursor2)return;
+    const cursorMode=window.matchMedia('(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference)');
+    let frame=0,restoreFrame=0,x=0,y=0;
+    function hideCursor(){
+      if(frame)cancelAnimationFrame(frame);if(restoreFrame)cancelAnimationFrame(restoreFrame);
+      frame=restoreFrame=0;document.documentElement.classList.remove('unitize-cursor-active');
+    }
+    function paint(){
+      frame=0;
+      const first=!document.documentElement.classList.contains('unitize-cursor-active');
+      if(first){cursor1.style.transition='none';cursor2.style.transition='none';}
+      const position=`translate3d(${x}px,${y}px,0) translate(-50%,-50%)`;
+      cursor1.style.transform=position;cursor2.style.transform=position;
+      if(first){
+        document.documentElement.classList.add('unitize-cursor-active');
+        restoreFrame=requestAnimationFrame(()=>{restoreFrame=0;cursor1.style.transition='';cursor2.style.transition='';});
       }
-      const {clientX, clientY} = event;
-      const position = `translate(-50%, -50%) translate(${clientX}px, ${clientY}px)`;
-      // A primeira aparição não deve animar desde o canto da janela.
-      if (!document.documentElement.classList.contains('unitize-cursor-active')) {
-        cursor1.style.transition = 'none';
-        cursor2.style.transition = 'none';
-        cursor1.style.transform = position;
-        cursor2.style.transform = position;
-        void cursor2.offsetWidth;
-        cursor1.style.transition = '';
-        cursor2.style.transition = '';
-      } else {
-        cursor1.style.transform = position;
-        cursor2.style.transform = position;
-      }
-      document.documentElement.classList.add('unitize-cursor-active');
-    }, {passive:true});
-
-    document.documentElement.addEventListener('pointerleave', hideCursor);
-    window.addEventListener('blur', hideCursor);
-    cursorMode.addEventListener('change', hideCursor);
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) hideCursor();
-    });
+    }
+    window.addEventListener('pointermove',event=>{
+      if(!cursorMode.matches||event.pointerType!=='mouse'){hideCursor();return;}
+      x=event.clientX;y=event.clientY;if(!frame)frame=requestAnimationFrame(paint);
+    },{passive:true});
+    document.documentElement.addEventListener('pointerleave',hideCursor);
+    window.addEventListener('blur',hideCursor);cursorMode.addEventListener('change',hideCursor);
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)hideCursor();});
   })();
 
 
@@ -73,7 +65,7 @@ window.UnitizeCaptureLocales=copy;
     const canvas = document.getElementById('starfield-canvas');
     const ctx = canvas?.getContext('2d');
     if (!ctx) return;
-    const STAR_COUNT = 150;
+    const STAR_COUNT = 220;
     const SPEED_X = -.15;
     const SPEED_Y = .35;
     const WHITE_STAR = 'rgba(238,244,255,';
@@ -89,7 +81,7 @@ window.UnitizeCaptureLocales=copy;
 
     function createStars() {
       stars = Array.from({length:STAR_COUNT}, () => {
-        const radius = Math.random()*1.5+.5;
+        const radius = Math.random()*1.75+.75;
         return {
           x:Math.random()*width, y:Math.random()*height,
           radius, depthFactor:radius*.8,
@@ -323,8 +315,9 @@ window.UnitizeCaptureLocales=copy;
   const observer=new MutationObserver(()=>{if(!scheduled){scheduled=true;requestAnimationFrame(()=>{scheduled=false;apply();});}});
   function apply(){
     observer.disconnect();
-    document.documentElement.lang=current==='zh'?'zh-CN':current;
-    document.documentElement.dir=languages[current].rtl?'rtl':'ltr';
+    const nextLang=current==='zh'?'zh-CN':current,nextDir=languages[current].rtl?'rtl':'ltr';
+    if(document.documentElement.lang!==nextLang)document.documentElement.lang=nextLang;
+    if(document.documentElement.dir!==nextDir)document.documentElement.dir=nextDir;
     const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
     let node;
     while((node=walker.nextNode())){
@@ -648,10 +641,10 @@ SOFTWARE.
         shadow: 0.28,       // sombra de contato (0–1)
         perspective: 1200,  // distância focal (px)
     };
-    const SEG = 96;
+    const SEG = 64; // Fewer cloth vertices; same normalized wave speed.
     const NODES = SEG + 1;
     const DT = 1 / 120;
-    const WAVE_SPEED = 30;
+    const WAVE_SPEED = 20;
     const STIFFNESS = 0.55;
     const FORCE_GAIN = 5.0;
     const BLEED = 48;       // folga do canvas para as dobras e a sombra
@@ -942,7 +935,7 @@ void main () {
                 const l = row + Math.max(x - 1, 0), r = row + Math.min(x + 1, SEG);
                 const dzdx = (zField[r] - zField[l]) / (2 * cellW);
                 const dzdy = (zField[down + x] - zField[up + x]) / (2 * cellH);
-                const inv = 1 / Math.hypot(dzdx, dzdy, 1);
+                const inv = 1 / Math.sqrt(dzdx*dzdx + dzdy*dzdy + 1);
                 const curve = zField[l] + zField[r] + zField[up + x] + zField[down + x] - 4 * zField[i];
                 let fold = 1 - curve * 0.01;
                 if (fold < 0.86) fold = 0.86; else if (fold > 1.06) fold = 1.06;
@@ -1415,6 +1408,67 @@ void main () {
   gradient.addColorStop(0,'#d5fbff');gradient.addColorStop(.14,'#99f3ff');
   gradient.addColorStop(.35,'#35d8ffb0');gradient.addColorStop(1,'#35d8ff00');
   g.fillStyle=gradient;g.fillRect(0,0,32,32);
+
+  let pointRenderer=null;
+  function createPointRenderer(){
+    const surface=document.createElement('canvas');
+    const gl=surface.getContext('webgl2',{alpha:true,antialias:false,premultipliedAlpha:true});
+    if(!gl)return null;
+    let program,buffer,texture,vert,frag;
+    function dispose(){if(program)gl.deleteProgram(program);if(buffer)gl.deleteBuffer(buffer);if(texture)gl.deleteTexture(texture);if(vert)gl.deleteShader(vert);if(frag)gl.deleteShader(frag);surface.remove();}
+    try{
+      function shader(type,code){const sh=gl.createShader(type);gl.shaderSource(sh,code);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS)){gl.deleteShader(sh);throw Error('particle_shader');}return sh;}
+      vert=shader(gl.VERTEX_SHADER,`#version 300 es
+        precision highp float;
+        in vec3 aPosition;in vec2 aDetail;
+        uniform vec2 uSize;uniform float uTime,uReduced,uDpr;
+        out float vAlpha;
+        void main(){
+          float angle=uReduced>0.5?0.25:uTime*6.28318530718/26.0;
+          float c=cos(angle),s=sin(angle),drift=uReduced>0.5?0.0:sin(uTime*0.9+aDetail.x)*0.008;
+          float x=(aPosition.x+drift)*c+aPosition.z*s;
+          float z=-aPosition.x*s+aPosition.z*c;
+          float y=aPosition.y*cos(0.16)-z*sin(0.16);
+          float depth=aPosition.y*sin(0.16)+z*cos(0.16);
+          float perspective=3.6/(3.6-depth);
+          vec2 pos=uSize*0.5+vec2(x,y)*min(uSize.x,uSize.y)*0.468*perspective;
+          gl_Position=vec4(pos.x/uSize.x*2.0-1.0,1.0-pos.y/uSize.y*2.0,0.0,1.0);
+          gl_PointSize=aDetail.y*perspective*6.2*uDpr;
+          vAlpha=(0.52+0.35*(depth+1.0)/2.0)*(uReduced>0.5?1.0:0.8+0.2*sin(uTime*1.25+aDetail.x));
+        }`);
+      frag=shader(gl.FRAGMENT_SHADER,`#version 300 es
+        precision mediump float;uniform sampler2D uGlow;in float vAlpha;out vec4 color;
+        void main(){vec4 glow=texture(uGlow,gl_PointCoord);color=vec4(glow.rgb,glow.a*vAlpha);}`);
+      program=gl.createProgram();gl.attachShader(program,vert);gl.attachShader(program,frag);gl.linkProgram(program);
+      if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error('particle_link');
+      gl.useProgram(program);
+      const data=new Float32Array(points.length*5);points.forEach((p,i)=>data.set([p.x,p.y,p.z,p.phase,p.size],i*5));
+      buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
+      const position=gl.getAttribLocation(program,'aPosition'),detail=gl.getAttribLocation(program,'aDetail');
+      gl.enableVertexAttribArray(position);gl.vertexAttribPointer(position,3,gl.FLOAT,false,20,0);
+      gl.enableVertexAttribArray(detail);gl.vertexAttribPointer(detail,2,gl.FLOAT,false,20,12);
+      texture=gl.createTexture();gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,glow);
+      gl.uniform1i(gl.getUniformLocation(program,'uGlow'),0);
+      gl.enable(gl.BLEND);gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE,gl.ONE,gl.ONE);gl.clearColor(0,0,0,0);
+      const uniforms=Object.fromEntries(['uSize','uTime','uReduced','uDpr'].map(name=>[name,gl.getUniformLocation(program,name)]));
+      surface.setAttribute('aria-hidden','true');surface.style.pointerEvents='none';
+      surface.addEventListener('webglcontextlost',event=>{event.preventDefault();pointRenderer=null;surface.remove();canvas.hidden=false;host.dataset.particleRenderer='canvas2d';sync();},{once:true});
+      host.append(surface);canvas.hidden=true;host.dataset.particleRenderer='webgl2';
+      return {
+        draw(t,reduce,w,h){
+          const dpr=Math.min(devicePixelRatio||1,2),cw=Math.round(w*dpr),ch=Math.round(h*dpr);
+          if(surface.width!==cw||surface.height!==ch){surface.width=cw;surface.height=ch;gl.viewport(0,0,cw,ch);}
+          gl.clear(gl.COLOR_BUFFER_BIT);gl.useProgram(program);gl.uniform2f(uniforms.uSize,w,h);
+          gl.uniform1f(uniforms.uTime,t);gl.uniform1f(uniforms.uReduced,reduce?1:0);gl.uniform1f(uniforms.uDpr,dpr);
+          gl.drawArrays(gl.POINTS,0,points.length);
+        },dispose
+      };
+    }catch{dispose();return null;}
+  }
+
   function resize(){
     const rect=host.getBoundingClientRect();width=rect.width;height=rect.height;
     const dpr=Math.min(devicePixelRatio||1,2);
@@ -1422,21 +1476,25 @@ void main () {
     ctx.setTransform(dpr,0,0,dpr,0,0);draw();
   }
   function draw(){
+    if(pointRenderer){pointRenderer.draw(time,reduced.matches,width,height);return;}
     ctx.clearRect(0,0,width,height);if(!points.length)return;
     const angle=reduced.matches ? .25 :time*Math.PI*2/26;
     const c=Math.cos(angle),s=Math.sin(angle),tilt=.16;
     const scale=Math.min(width,height)*.468;
-    const projected=points.map(p=>{
+    // Additive glow is order-independent: no depth sort or per-frame object list.
+    ctx.globalCompositeOperation='lighter';
+    const ct=Math.cos(tilt),st=Math.sin(tilt);
+    for(const p of points){
       const drift=reduced.matches?0:Math.sin(time*.9+p.phase)*.008;
       const x=(p.x+drift)*c+p.z*s,z=-p.x*s+p.z*c;
-      const y=p.y*Math.cos(tilt)-z*Math.sin(tilt);
-      const depth=p.y*Math.sin(tilt)+z*Math.cos(tilt);
+      const y=p.y*ct-z*st;
+      const depth=p.y*st+z*ct;
       const perspective=3.6/(3.6-depth);
-      return {x:width/2+x*scale*perspective,y:height/2+y*scale*perspective,z:depth,
-        size:p.size*perspective,alpha:(.52+.35*(depth+1)/2)*(reduced.matches?1:.8+.2*Math.sin(time*1.25+p.phase))};
-    }).sort((a,b)=>a.z-b.z);
-    ctx.globalCompositeOperation='lighter';
-    for(const p of projected){ctx.globalAlpha=p.alpha;const radius=p.size*3.1;ctx.drawImage(glow,p.x-radius,p.y-radius,radius*2,radius*2);}
+      const px=width/2+x*scale*perspective,py=height/2+y*scale*perspective;
+      const radius=p.size*perspective*3.1;
+      ctx.globalAlpha=(.52+.35*(depth+1)/2)*(reduced.matches?1:.8+.2*Math.sin(time*1.25+p.phase));
+      ctx.drawImage(glow,px-radius,py-radius,radius*2,radius*2);
+    }
     ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
   }
   function tick(stamp){
@@ -1463,6 +1521,7 @@ void main () {
         points.push({x:(x-160)/160,y:(y-160)/160,z:(random-.5)*.24,phase:random*Math.PI*2,size:.40+random*.34});
       }
       if(!points.length)return;
+      pointRenderer=createPointRenderer();if(!pointRenderer)host.dataset.particleRenderer='canvas2d';
       host.dataset.particleCount=String(points.length);host.classList.add('particles-ready');resize();sync();
     }catch{canvas.hidden=true;}
   };
