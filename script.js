@@ -113,17 +113,16 @@ window.UnitizeCaptureLocales=copy;
       for (let i=0;i<stars.length && connectionCount<MAX_CONNECTIONS;i++) {
         if (connected.has(i)) continue;
         let nearest=-1;
-        let distance=CONNECTION_DISTANCE*CONNECTION_DISTANCE;
+        let distance=CONNECTION_DISTANCE;
         for (let j=i+1;j<stars.length;j++) {
           if (connected.has(j)) continue;
-          const dx=stars[i].x-stars[j].x,dy=stars[i].y-stars[j].y;
-          const candidateDistance=dx*dx+dy*dy;
+          const candidateDistance=Math.hypot(stars[i].x-stars[j].x,stars[i].y-stars[j].y);
           if (candidateDistance<distance) {nearest=j;distance=candidateDistance;}
         }
         if (nearest<0) continue;
         const start=stars[i];
         const end=stars[nearest];
-        const opacity=.18*(1-Math.sqrt(distance)/CONNECTION_DISTANCE)*Math.min(start.opacity,end.opacity);
+        const opacity=.18*(1-distance/CONNECTION_DISTANCE)*Math.min(start.opacity,end.opacity);
         ctx.beginPath();
         ctx.moveTo(start.x,start.y);
         ctx.lineTo(end.x,end.y);
