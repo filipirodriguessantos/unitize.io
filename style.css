@@ -109,25 +109,19 @@ body>.header{position:sticky;z-index:30}body>.footer{position:relative;z-index:1
 #mobile_menu a:hover,#mobile_menu a:focus-visible,#mobile_menu a.active{color:var(--blue)}
 
 
-/* Contorno neon compartilhado com os quadros da plataforma. */
-:is(.mission-window, .architecture-flow, .waitlist-form, .card) {
+/* Shared card feedback: mouse hover, touch press and keyboard focus keep the same cyan LED. */
+:is(.mission-window, .architecture-flow, .waitlist-form, .ticket-terminal, .card) {
   transition: border-color .22s ease, box-shadow .22s ease;
 }
-@media (hover: hover) {
-  :is(.mission-window, .architecture-flow, .waitlist-form, .card):hover {
-    border-color: var(--blue);
-    box-shadow: 0 0 0 1px rgba(53,216,255,.18),
-                0 0 16px rgba(53,216,255,.20),
-                0 0 32px rgba(53,216,255,.09),
-                0 12px 40px #0002;
-  }
-}
-:is(.mission-window, .architecture-flow, .waitlist-form, .card):focus-within {
+:is(.mission-window, .architecture-flow, .waitlist-form, .ticket-terminal, .card):is(:hover, :active, :focus-within) {
   border-color: var(--blue);
-  box-shadow: 0 0 0 1px rgba(53,216,255,.18), 0 0 18px rgba(53,216,255,.16);
+  box-shadow: 0 0 0 1px rgba(53,216,255,.18),
+              0 0 16px rgba(53,216,255,.20),
+              0 0 32px rgba(53,216,255,.09),
+              0 12px 40px #0002;
 }
 @media (prefers-reduced-motion: reduce) {
-  :is(.mission-window, .architecture-flow, .waitlist-form, .card) { transition: none; }
+  :is(.mission-window, .architecture-flow, .waitlist-form, .ticket-terminal, .card) { transition: none; }
 }
 
 /* Otimização temporária somente enquanto cada entrada está animando. */
@@ -303,7 +297,7 @@ body{overflow-x:clip}
 .unitize-frame-glow rect.unitize-frame-halo-wide{stroke-width:12px;stroke-opacity:.06}
 .unitize-frame-glow rect.unitize-frame-halo{stroke-width:6px;stroke-opacity:.22}
 @keyframes unitize-neon-stroke-travel{from{stroke-dashoffset:0}to{stroke-dashoffset:-100}}
-@media(hover:hover){.mission-window:hover>.unitize-frame-glow{opacity:0}.mission-window:hover>.unitize-frame-glow{animation-play-state:paused}}
+.mission-window:is(:hover,:active,:focus-within)>.unitize-frame-glow{opacity:0;animation-play-state:paused}
 .mission-window:focus-within>.unitize-frame-glow{opacity:0}
 .mission-window:focus-within>.unitize-frame-glow{animation-play-state:paused}
 @media(prefers-reduced-motion:reduce){.unitize-frame-glow{display:none;transition:none;animation:none}}
