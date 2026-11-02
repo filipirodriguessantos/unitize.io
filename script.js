@@ -1339,7 +1339,17 @@ void main () {
     if(endpoint.protocol!=='https:'||endpoint.pathname!=='/'||endpoint.search||endpoint.hash||endpoint.username||endpoint.password||!(endpoint.hostname==='api.unitize.io'||endpoint.hostname.endsWith('.workers.dev')))throw new Error('invalid_endpoint');
     remote=await configJSON(new URL('/v1/config',endpoint));
     if(remote.enabled!==true||typeof remote.turnstile_site_key!=='string'||!remote.turnstile_site_key||typeof remote.controller_name!=='string'||!remote.controller_name.trim()||typeof remote.privacy_contact!=='string'||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(remote.privacy_contact)||!Number.isInteger(remote.retention_days)||remote.retention_days<1||remote.retention_days>365)throw new Error('invalid_configuration');
-  }catch{if(initialStatus)initialStatus.textContent=msg('unavailable')+' '+msg('browserHelp');if(initialButton){initialButton.disabled=false;initialButton.type='button';initialButton.textContent=msg('retry');initialButton.onclick=()=>{initialButton.disabled=true;initPublicCapture();};}return;}
+  }catch{
+    if(initialStatus)initialStatus.textContent=msg('unavailable')+' '+msg('browserHelp');
+    // Recover configuration only. Never replay a registration POST.
+    let retrying=false;
+    const retry=()=>{if(retrying)return;retrying=true;clearTimeout(recoveryTimer);window.removeEventListener('online',retry);document.removeEventListener('visibilitychange',onVisible);if(initialButton)initialButton.disabled=true;initPublicCapture();};
+    const onVisible=()=>{if(document.visibilityState==='visible')retry();};
+    const recoveryTimer=setTimeout(retry,30000);
+    window.addEventListener('online',retry,{once:true});document.addEventListener('visibilitychange',onVisible);
+    if(initialButton){initialButton.disabled=false;initialButton.type='button';initialButton.textContent=msg('retry');initialButton.onclick=retry;}
+    return;
+  }
   const form=document.createElement('form');form.id='public-waitlist-form';form.className='waitlist-form capture-managed';
   const questions=[
     ['profile',t('Seu perfil','Your role'),[['software_house',msg('Software house')],['integrator',t('Integrador','Integrator')],['internal_team',t('Equipe interna','Internal team')],['other',t('Outro','Other')]]],
