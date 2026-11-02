@@ -1324,7 +1324,7 @@ void main () {
   // Retry configuration GETs once; never automatically repeat a registration POST.
   async function configJSON(url){
     for(let attempt=0;attempt<2;attempt++){
-      try{const response=await timedFetch(url,{cache:'no-store',credentials:'omit'});if(!response.ok)throw new Error('http_'+response.status);try{return await response.json();}catch{throw new Error('invalid_json');}}
+      try{const response=await timedFetch(url,{credentials:'omit'});if(!response.ok)throw new Error('http_'+response.status);try{return await response.json();}catch{throw new Error('invalid_json');}}
       catch(error){if(attempt===1)throw error;}
     }
   }
