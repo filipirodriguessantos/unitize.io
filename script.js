@@ -1324,7 +1324,7 @@ void main () {
   // Retry configuration GETs once; never automatically repeat a registration POST.
   async function configJSON(url){
     for(let attempt=0;attempt<2;attempt++){
-      try{const response=await timedFetch(url,{cache:'no-store',credentials:'omit'});if(!response.ok)throw new Error('configuration_unavailable');return await response.json();}
+      try{const response=await timedFetch(url,{cache:'no-store',credentials:'omit'});if(!response.ok)throw new Error('http_'+response.status);try{return await response.json();}catch{throw new Error('invalid_json');}}
       catch(error){if(attempt===1)throw error;}
     }
   }
@@ -1332,15 +1332,18 @@ void main () {
   if(initialStatus)initialStatus.textContent=msg('loading');
   const t=window.UnitizeCaptureText;
   const root=new URL(document.documentElement.dataset.siteRoot||'./',document.baseURI);
-  let settings,remote,endpoint;
+  let settings,remote,endpoint,configStage='C1';
   try{
     settings=await configJSON(new URL('capture-config.json',root));if(settings.enabled!==true)throw new Error('capture_disabled');
-    endpoint=new URL(settings.api_origin);
+    configStage='C2';endpoint=new URL(settings.api_origin);
     if(endpoint.protocol!=='https:'||endpoint.pathname!=='/'||endpoint.search||endpoint.hash||endpoint.username||endpoint.password||!(endpoint.hostname==='api.unitize.io'||endpoint.hostname.endsWith('.workers.dev')))throw new Error('invalid_endpoint');
-    remote=await configJSON(new URL('/v1/config',endpoint));
+    configStage='C3';remote=await configJSON(new URL('/v1/config',endpoint));
+    configStage='C4';
     if(remote.enabled!==true||typeof remote.turnstile_site_key!=='string'||!remote.turnstile_site_key||typeof remote.controller_name!=='string'||!remote.controller_name.trim()||typeof remote.privacy_contact!=='string'||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(remote.privacy_contact)||!Number.isInteger(remote.retention_days)||remote.retention_days<1||remote.retention_days>365)throw new Error('invalid_configuration');
-  }catch{
-    if(initialStatus)initialStatus.textContent=msg('unavailable')+' '+msg('browserHelp');
+  }catch(error){
+    // Bounded diagnostic: stage + failure type only, no contact data or token.
+    const detail=error?.name==='AbortError'?'timeout':/^http_[0-9]{3}$/.test(error?.message)?error.message:error?.message==='invalid_json'?'json':error?.name==='TypeError'?'network':'config';
+    if(initialStatus)initialStatus.textContent=msg('unavailable')+' '+msg('browserHelp')+' ['+configStage+'-'+detail+']';
     // Recover configuration only. Never replay a registration POST.
     let retrying=false;
     const retry=()=>{if(retrying)return;retrying=true;clearTimeout(recoveryTimer);window.removeEventListener('online',retry);document.removeEventListener('visibilitychange',onVisible);if(initialButton)initialButton.disabled=true;initPublicCapture();};
