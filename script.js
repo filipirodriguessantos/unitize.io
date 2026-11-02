@@ -1534,3 +1534,20 @@ void main () {
   else if(reduced.addListener)reduced.addListener(sync);
 })();
 /* END UNITIZE_PARTICLE_LOGO */
+
+
+/* BEGIN UNITIZE_NEON_VISIBILITY */
+(function initNeonVisibility(){
+  const frames=Array.from(document.querySelectorAll('.mission-window>.unitize-frame-glow')).map(svg=>svg.parentElement);
+  if(!frames.length)return;
+  const visible=new Set(),reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  function sync(){for(const frame of frames)frame.classList.toggle('unitize-neon-active',!document.hidden&&!reduced.matches&&visible.has(frame));}
+  if('IntersectionObserver' in window){
+    const observer=new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting)visible.add(entry.target);else visible.delete(entry.target);}sync();},{threshold:0});
+    for(const frame of frames)observer.observe(frame);
+  }else{for(const frame of frames)visible.add(frame);sync();}
+  document.addEventListener('visibilitychange',sync);
+  if(reduced.addEventListener)reduced.addEventListener('change',sync);
+  else if(reduced.addListener)reduced.addListener(sync);
+})();
+/* END UNITIZE_NEON_VISIBILITY */

@@ -291,3 +291,19 @@ body{overflow-x:clip}
 @media(hover:hover){.waitlist-station>.waitlist-form:hover::before,.waitlist-station>.ticket-terminal:hover::before{opacity:1}}
 .waitlist-station>.waitlist-form:focus-within::before,.waitlist-station>.ticket-terminal:focus-within::before{opacity:1}
 @media(prefers-reduced-motion:reduce){.waitlist-station>.waitlist-form::before,.waitlist-station>.ticket-terminal::before{transition:none}}
+
+
+/* BEGIN UNITIZE_NEON_STROKE_TRIAL — local preview, remove block + SVGs to revert. */
+.mission-window{position:relative}
+.unitize-frame-glow{position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);overflow:visible;pointer-events:none;z-index:2;opacity:1;transition:opacity .25s ease;filter:drop-shadow(0 0 6px #00f0ffbb);animation:unitize-neon-stroke-travel 16s linear infinite;animation-play-state:paused}
+.unitize-frame-glow rect{width:calc(100% - 1px);height:calc(100% - 1px);rx:14.5px;fill:none;stroke:#00f0ff;stroke-width:2.4px;stroke-linecap:round;stroke-dasharray:6.6667 93.3333}
+.unitize-neon-active>.unitize-frame-glow{animation-play-state:running}
+.unitize-frame-glow rect.unitize-frame-halo-wide{stroke-width:12px;stroke-opacity:.06}
+.unitize-frame-glow rect.unitize-frame-halo{stroke-width:6px;stroke-opacity:.22}
+@keyframes unitize-neon-stroke-travel{from{stroke-dashoffset:0}to{stroke-dashoffset:-100}}
+@media(hover:hover){.mission-window:hover>.unitize-frame-glow{opacity:0}.mission-window:hover>.unitize-frame-glow{animation-play-state:paused}}
+.mission-window:focus-within>.unitize-frame-glow{opacity:0}
+.mission-window:focus-within>.unitize-frame-glow{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){.unitize-frame-glow{display:none;transition:none;animation:none}}
+.unitize-frame-glow rect.unitize-frame-core{stroke:#d9ffff;stroke-width:.9px}
+/* END UNITIZE_NEON_STROKE_TRIAL */
