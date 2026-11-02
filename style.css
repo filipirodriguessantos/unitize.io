@@ -307,3 +307,8 @@ body{overflow-x:clip}
 @media(prefers-reduced-motion:reduce){.unitize-frame-glow{display:none;transition:none;animation:none}}
 .unitize-frame-glow rect.unitize-frame-core{stroke:#d9ffff;stroke-width:.9px}
 /* END UNITIZE_NEON_STROKE_TRIAL */
+
+
+/* BEGIN HEADER_NEON_TRIAL — approved static light on lower header edge. */
+.header::after{content:'';position:absolute;inset-inline:0;bottom:-1px;height:1px;background:#35d8ffb3;box-shadow:0 0 8px #35d8ff66,0 3px 14px #35d8ff33;pointer-events:none}
+/* END HEADER_NEON_TRIAL */
