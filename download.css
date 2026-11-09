@@ -17,3 +17,9 @@
 .download-platforms h2 > i, .download-system { color: #35d8ff; }
 .download-system { font-size: 1.65rem; margin-bottom: .75rem; }
 .download-page .nav-link-glow[aria-current='page'] { color: #35d8ff; }
+
+.download-languages { position: relative; z-index: 2; color: #a7edff; }
+.download-languages summary { cursor: pointer; padding: .5rem .7rem; border: 1px solid #29445e; border-radius: .65rem; }
+.download-languages ul { position: absolute; inset-inline-end: 0; min-width: 10rem; max-height: min(55vh, 22rem); overflow: auto; margin: .4rem 0 0; padding: .35rem; list-style: none; background: #0a1020; border: 1px solid #29445e; border-radius: .65rem; }
+.download-languages a { display: block; padding: .35rem .55rem; color: #e2eaf5; }
+.download-languages a:hover, .download-languages a[aria-current="page"] { color: #35d8ff; }
