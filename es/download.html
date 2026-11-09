@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Escritorio | Unitize.io</title>
+<meta name="description" content="Worktrees de Git, terminales en paralelo y vistas previas locales en una sola aplicación.">
+<link rel="icon" href="../favicon.png">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="../download.css">
+</head>
+<body class="download-page">
+<header class="header"><nav id="navbar" aria-label="Navegación principal">
+<a class="brand" href="./index.html#Home" aria-label="Unitize — início"><img id="nav_logo" src="../logo.png" alt="Unitize.io" width="220" height="123"></a>
+<ul id="nav_list"><li><a class="nav-link-glow" href="./index.html#Home"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Inicio</span></a></li><li><a class="nav-link-glow" href="./index.html#whitepaper"><i class="fa-solid fa-layer-group" aria-hidden="true"></i><span>Arquitectura</span></a></li><li><a class="nav-link-glow" href="./index.html#funcion"><i class="fa-solid fa-gears" aria-hidden="true"></i><span>Cómo funciona</span></a></li><li><a class="nav-link-glow" href="./index.html#cases"><i class="fa-solid fa-wand-sparkles" aria-hidden="true"></i><span>Soluciones</span></a></li><li><a class="nav-link-glow" href="./index.html#CTA"><i class="fa-solid fa-ticket" aria-hidden="true"></i><span>Lista de espera</span></a></li><li><a class="nav-link-glow" href="./download.html" aria-current="page"><i class="fa-solid fa-laptop-code" aria-hidden="true"></i><span>Escritorio</span></a></li></ul>
+<div class="nav-actions"><button id="mobile_btn" type="button" aria-label="Abrir navegación" aria-controls="mobile_menu" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></button></div>
+</nav><nav id="mobile_menu" aria-label="Navegación móvil" hidden><ul><li><a class="nav-link-glow" href="./index.html#Home"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Inicio</span></a></li><li><a class="nav-link-glow" href="./index.html#whitepaper"><i class="fa-solid fa-layer-group" aria-hidden="true"></i><span>Arquitectura</span></a></li><li><a class="nav-link-glow" href="./index.html#funcion"><i class="fa-solid fa-gears" aria-hidden="true"></i><span>Cómo funciona</span></a></li><li><a class="nav-link-glow" href="./index.html#cases"><i class="fa-solid fa-wand-sparkles" aria-hidden="true"></i><span>Soluciones</span></a></li><li><a class="nav-link-glow" href="./index.html#CTA"><i class="fa-solid fa-ticket" aria-hidden="true"></i><span>Lista de espera</span></a></li><li><a class="nav-link-glow" href="./download.html" aria-current="page"><i class="fa-solid fa-laptop-code" aria-hidden="true"></i><span>Escritorio</span></a></li></ul></nav></header>
+<main class="download-main">
+<section class="download-intro" aria-labelledby="download-title">
+<p class="download-kicker">UNITIZE DESKTOP / CLI</p>
+<h1 id="download-title">Tu espacio de trabajo para agentes.</h1>
+<p>Worktrees de Git, terminales en paralelo y vistas previas locales en una sola aplicación.</p>
+</section>
+<section class="download-platforms" aria-labelledby="platform-title">
+<h2 id="platform-title"><i class="fa-solid fa-desktop" aria-hidden="true"></i> Escritorio</h2>
+<ul class="download-grid">
+<li><i class="fa-brands fa-apple download-system" aria-hidden="true"></i><h3>macOS</h3><p><bdi dir="ltr">Apple Silicon · ARM64 · DMG</bdi></p><span>En preparación</span></li>
+<li><i class="fa-brands fa-apple download-system" aria-hidden="true"></i><h3>macOS</h3><p><bdi dir="ltr">Intel · x64 · DMG</bdi></p><span>En preparación</span></li>
+<li><i class="fa-brands fa-windows download-system" aria-hidden="true"></i><h3>Windows</h3><p><bdi dir="ltr">x64 · Instalador</bdi></p><span>Compilación local en pruebas</span></li>
+<li><i class="fa-brands fa-linux download-system" aria-hidden="true"></i><h3>Linux</h3><p><bdi dir="ltr">x64 · AppImage</bdi></p><span>En preparación</span></li>
+</ul>
+</section>
+<section class="download-pilot" aria-labelledby="pilot-title">
+<h2 id="pilot-title">¿Quieres participar en el piloto?</h2>
+<p>Inscríbete para recibir una invitación cuando haya una versión de prueba.</p>
+<a class="button button-primary" href="./index.html#CTA">Unirse a la lista de espera</a>
+</section>
+</main>
+<script>
+const menuButton = document.getElementById('mobile_btn');
+const menu = document.getElementById('mobile_menu');
+function setMenu(open) {
+  menu.hidden = !open;
+  menuButton.setAttribute('aria-expanded', String(open));
+}
+menuButton.addEventListener('click', () => setMenu(menu.hidden));
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && !menu.hidden) {
+    setMenu(false);
+    menuButton.focus();
+  }
+});
+</script>
+</body>
+</html>
