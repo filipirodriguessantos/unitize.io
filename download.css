@@ -1,21 +1,21 @@
-.download-page { margin: 0; background: radial-gradient(ellipse at 83% 0%, #142b47 0%, transparent 52%), #070b1a; color: #e2eaf5; min-height: 100vh; }
+.download-page { min-height: 100vh; }
 .download-main { width: min(70rem, calc(100% - 2rem)); margin-inline: auto; padding-block: clamp(3rem, 8vw, 7rem); }
 .download-intro { margin-bottom: 3rem; animation: download-entrance .75s ease-out both; }
 .download-kicker { letter-spacing: .14em; font-weight: 700; }
 .download-intro h1 { font-size: clamp(2.35rem, 6vw, 4.6rem); line-height: 1.05; margin-block: .5rem 1rem; }
-.download-main p { color: #a4b6cb; }
-.download-main .download-kicker { color: #35d8ff; }
+.download-main p { color: var(--muted); }
+.download-main .download-kicker { color: var(--blue); }
 .download-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1rem; list-style: none; padding: 0; margin-block: 1rem 0; }
-.download-grid li, .download-pilot { padding: 1.4rem; border: 1px solid #29445e; border-radius: 1rem; background: #0a1020; }
+.download-grid li, .download-pilot { padding: 1.4rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--panel); }
 .download-grid h3 { margin: 0 0 .35rem; }
-.download-grid span { display: inline-block; color: #92eaff; border: 1px solid #29445e; border-radius: 1rem; padding: .2rem .6rem; font-size: .85rem; margin-top: .65rem; }
+.download-grid span { display: inline-block; color: #92eaff; border: 1px solid var(--line); border-radius: 1rem; padding: .2rem .6rem; font-size: .85rem; margin-top: .65rem; }
 .download-pilot { margin-top: 2rem; }
 .download-pilot .button { display: inline-flex; margin-top: 1rem; }
-@media (hover: hover) { .download-grid li:hover { border-color: #35d8ff; box-shadow: 0 0 14px #35d8ff26; } }
+@media (hover: hover) { .download-grid li:hover { border-color: var(--blue); box-shadow: 0 0 14px #35d8ff26; } }
 @keyframes download-entrance { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .download-intro { animation: none; } }
-.download-platforms h2 > i, .download-system { color: #35d8ff; }
+.download-platforms h2 > i, .download-system { color: var(--blue); }
 .download-system { font-size: 1.65rem; margin-bottom: .75rem; }
-.download-page .nav-link-glow[aria-current='page'] { color: #35d8ff; }
+.download-page .nav-link-glow[aria-current='page'] { color: var(--blue); }
 
 .download-main { position: relative; z-index: 1; }
