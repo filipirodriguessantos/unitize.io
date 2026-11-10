@@ -17,3 +17,5 @@
 .download-platforms h2 > i, .download-system { color: #35d8ff; }
 .download-system { font-size: 1.65rem; margin-bottom: .75rem; }
 .download-page .nav-link-glow[aria-current='page'] { color: #35d8ff; }
+
+.download-main { position: relative; z-index: 1; }
